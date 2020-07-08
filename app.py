@@ -1,14 +1,50 @@
 #! /usr/bin/python3
-# Уроки для этого.
-# https://www.youtube.com/watch?v=45OYwgmWqmc&feature=emb_logo
 
+import PyQt5
 from flask import Flask, url_for, request, render_template, \
     redirect, abort, flash, make_response
 import time
 import datetime
 import requests
 
-'''Мессенджер на flask + request + PyQT5'''
+"""
+Мессенджер на flask + request + PyQT5
+
+Уроки для этого : 
+    https://www.youtube.com/watch?v=45OYwgmWqmc&feature=emb_logo
+
+обновление pip3 может понадобится для установки свежих модулей на Python.
+    sudo -H pip3 install --upgrade pip
+
+Дизайнер PyQt5 поставляется вместе с набором инструментов, установим их:
+    sudo apt-get install python3-pyqt5
+    sudo apt-get install qttools5-dev-tools
+
+После создания нужного desktop приложения:
+    сохранений для послед использования как messenger.ui представляет из себя файл с мета разметкой xml. 
+    для преобразования xml файла в Python код импортируем и используем модуль "import PyQt5" 
+    Используем команду:
+        pyuic5 messenger.ui -o main_window.py
+    Чтобы преобразовать xml в python код класс, и функции для работы как с Python кодом.
+    
+Далее добавим в код след, и это запустит приложение в работу.
+
+    class Ui_MainWindow(QtWidgets.QMainWindow):
+        def __init__(self):
+            super().__init__()
+            self.setupUi(self)
+    
+    app = QtWidgets.QApplication([])
+    window = Ui_MainWindow()
+    window.show()
+    app.exec_()    
+    
+    
+"""
+
+
+
+
 
 app = Flask(__name__)
 app.secret_key = 'some_secret'
