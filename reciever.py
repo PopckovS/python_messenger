@@ -17,12 +17,13 @@ while True:
         params={'after': last_time_of_message}
     )
     data = response.json()
-    print('/*-------------- Запрос {counter_request} -------------*/'.format(counter_request=counter_request))
+    # print('/*-------------- Запрос {counter_request} -------------*/'.format(counter_request=counter_request))
     counter_msg = 0
     for message in data['messages']:
         counter_msg += 1
         beauty_time = datetime.fromtimestamp(message['time'])
-        print('---- №{counter_msg} ----'.format(counter_msg=counter_msg))
+        # print('---- №{counter_msg} ----'.format(counter_msg=counter_msg))
+        print('=========================')
         print('Имя : ' + message['username'])
         print('Сообщение : ' + message['text'])
         print('Время : ' + beauty_time.strftime('%Y:%m:%d %H:%M:%S'))

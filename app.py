@@ -51,18 +51,18 @@ app.secret_key = 'some_secret'
 
 # Массив наших сообщений, со временем будем работать как с типом float от 1970 как основания Unix
 messages = [
-    # {
-    #     "username": "johny",
-    #     "text": "Hello World !",
-    #     "time": time.time()
-    # }
+    {
+        "name": "johny",
+        "text": "Hello World !",
+        "time": time.time()
+    }
 ]
 
 # Глоб Словарь всех пользователей
 users = {
     # username:password
-    'jack': 'blak',
-    'mary': '123'
+    'sergio': '123',
+    'jojo': '123'
 }
 
 
@@ -107,25 +107,27 @@ def send_message():
     request: {"username":str, "password":str "text":"str"}
     response: {"ok":true}
     '''
-    data = request.json # JSON -> dict
+    # data = request.json # JSON -> dict
 
-    username = data['username']
-    password = data['password']
-    text = data['text']
+    name = request.json['name']
+    password = request.json['password']
+    text = request.json['text']
+
+    for token in [name, password, text]:
+        if not isinstance(token, str) or not token or len(token) > 1024:
+            abort(400)
 
     # Авторизация пользователя
-    if username in users:
-        real_password = users[username]
-        if real_password != password:
-            return {"ok": False}
+    if name in users:
+        # Если пароль неверен то кидаем ошибку авторизации
+        if users[name] != password:
+            abort(401)
     else:
-        users[username] = password
+        # Создание нового пользователя
+        users[name] = password
 
     # Добавим новое сообщение в наш глобальный список сообщений
-    messages.append({'username': username, 'text': text, 'time': time.time()})
-    print('========')
-    print(messages)
-    print('=======')
+    messages.append({'name': name, 'text': text, 'time': time.time()})
     return {'ok': True}
 
 
@@ -149,6 +151,27 @@ def page_status():
     )
     return response
 
+
+
+
+def filter_dicts(elements, key, min_value):
+    new_elements = []
+
+    for element in elements:
+        if element[key] > min_value:
+            new_elements.append(element)
+    return new_elements
+
+
+
+@app.route('/messages')
+def messages_view():
+    try:
+        after = float(request.args['after'])
+    except:
+        abort(400)
+    filtered_messages = filter_dicts(messages, key='time', min_value=after)
+    return {'messages': filtered_messages}
 
 
 # Запуск всего приложения, в случае если приложение запущено как основное, а не как модуль

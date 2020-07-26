@@ -5,15 +5,20 @@ from pprint import pprint
 
 flag = 'N'
 
+username = input("Введите ваше имя:")
+password = input("Введите ваш пароль доступа:")
+
 # while flag != 'Y':
 while True:
-    username = input("Введите ваше имя:")
-    password = input("Введите ваш пароль доступа:")
+
     text = input("Введите ваше сообщение:")
 
+    message = {"username": username,
+               "password": password,
+               "text": text}
     response = requests.post(
         'http://127.0.0.1:5000/send',
-        json={"username": username, "password": password, "text": text}
+        json=message
     )
     # print('======== Ответ на наш POST запрос к серверу ========')
     # pprint(response.json())
