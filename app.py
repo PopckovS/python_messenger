@@ -1,15 +1,28 @@
 #! /usr/bin/python3
 
+#
 import PyQt5
+
+# Импортируем микро-сервис flask
 from flask import Flask, url_for, request, render_template, \
     redirect, abort, flash, make_response
+
+# Импортируем модуль для работы со временем
 import time
 import datetime
+
+# Импортируем модуль c протоколом http
 import requests
+
+# Импортирую Модуль для работы с Базами Данных SQLAlchemy
+import sqlalchemy
 
 """
 Мессенджер на flask + request + PyQT5
 
+Установка SQLalchemy
+    pip3 install sqlalchemy
+    
 Уроки для этого : 
     https://www.youtube.com/watch?v=45OYwgmWqmc&feature=emb_logo
 
@@ -50,6 +63,7 @@ app = Flask(__name__)
 app.secret_key = 'some_secret'
 
 # Массив наших сообщений, со временем будем работать как с типом float от 1970 как основания Unix
+# TODO если в массиве нету сообщений вабще, то сервер упадет с ошибкой
 messages = [
     {
         "name": "johny",
@@ -87,6 +101,11 @@ def history():
         ]
     }
     """
+
+    # ==========================
+    return {'messages': messages}
+    # ==========================
+
     after = float(request.args['after'])
     filter_messages = []
 

@@ -13,20 +13,27 @@ from datetime import datetime
 
 class MessengerWindow(QtWidgets.QMainWindow, main_window.Ui_MainWindow):
 
-    """Унаследовались от класса сгенерированного на основе main_window.py и запускаем от сюда окно приложения.
-    pyuic5 messenger.ui -o main_window.py
+    """
+        Унаследовались от класса сгенерированного на основе main_window.py и запускаем от сюда окно приложения.
+
+        pyuic5 messenger.ui -o main_window.py
     """
 
-    def __init__(self):
+    def __init__(self, url):
         super().__init__()
         self.setupUi(self)
+
+        # Делаем URL общедоступным в атрибуте класса
+        self.url = url
 
         # Связка кнопки зарегестрированной как pushButton
         # с методом sendMessage который определим в этом классе.
         self.pushButton.pressed.connect(self.sendMessage)
 
         self.after = time.time() - 24 * 60 * 60
-        # Таймер для запуска метода который будет запускаться через некотрый промежуток времени
+
+        # Таймер для запуска метода который будет запускаться через некотрый
+        # промежуток времени, постоянно опрашивая нашу функцию update_messages
         self.timer = QtCore.QTimer()
         self.timer.timeout.connect(self.update_messages)
         self.timer.start(1000)
@@ -35,35 +42,44 @@ class MessengerWindow(QtWidgets.QMainWindow, main_window.Ui_MainWindow):
 
 
     def add_text(self, text):
-        self.textBrowser.append(text)
+        """Метод добавляет сообщения в общий чат"""
+        self.textBrowser.append(text.format(end='\n'))
         self.textBrowser.repaint()
 
 
 
     def format_message(self, message):
+        """Метод форматирует данные в тот вид в котором данные будут отображены в чате"""
         name = message['name']
         text = message['text']
 
+        # Форматирование даты/времени
         dt = datetime.fromtimestamp(message['time'])
         dt_beauty = dt.strftime('%Y:%m:%d %H:%M:%S')
 
+        # Возвращает форматированные данные
         return f'{name} {dt_beauty}\n{text}\n'
 
 
 
     def update_messages(self):
+        # Получаем все сообщения с сервера, после определенной даты времени
         try:
-            response = requests.get(
-                'http://127.0.0.1:5000/messages',
-                params={'after': self.after}
-            )
+            response = requests.get(f'{self.url}messages', params={'after': self.after})
         except:
             return
 
-        messages = response.json()['messages']
 
+        messages = response.json()['messages']
         for message in messages:
+            # format_message красиво форматирует данные и передает их в
+            # метод add_text который добавляет сообщение в общий чат
             self.add_text(self.format_message(message))
+
+            # Очищаем поле ввода сообщений
+            self.textMessage.setText('')
+
+            # Обновляем время с полседнего посланного сообщения
             self.after = message['time']
 
 
@@ -71,7 +87,9 @@ class MessengerWindow(QtWidgets.QMainWindow, main_window.Ui_MainWindow):
 
 
     def sendMessage(self):
-        """Метод для обработки кнопки отправки сообщения"""
+        """Метод для обработки кнопки отправки сообщения
+        Отправляет введенное сообщение на сервер
+        """
 
         # Получаем текст из поля для логина
         username = self.lineUserName.text()
@@ -96,7 +114,7 @@ class MessengerWindow(QtWidgets.QMainWindow, main_window.Ui_MainWindow):
 
         # Проверка на отправку сообщения на сервер
         try:
-            response = requests.post('http://127.0.0.1:5000/send', json=message)
+            response = requests.post(f'{self.url}send', json=message)
         except:
             self.add_text('Сервер не доступен')
             return
@@ -113,7 +131,7 @@ class MessengerWindow(QtWidgets.QMainWindow, main_window.Ui_MainWindow):
 
 # Заппускаем работу всего приложения
 app = QtWidgets.QApplication([])
-window = MessengerWindow()
+window = MessengerWindow('http://127.0.0.1:5000/')
 window.show()
 app.exec_()
 
