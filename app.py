@@ -17,6 +17,9 @@ import requests
 # Импортирую Модуль для работы с Базами Данных SQLAlchemy
 import sqlalchemy
 
+# Подгружаем файлы конфигурация
+import config
+
 """
 Мессенджер на flask + request + PyQT5
 
@@ -83,10 +86,8 @@ users = {
 
 @app.route('/')
 def page_index():
-    return 'Hello World!'
-
-
-
+    """Главная страницы сайта, по работе с ботами"""
+    return 'Главная страницы'
 
 
 @app.route("/history")
@@ -114,8 +115,6 @@ def history():
             filter_messages.append(message)
 
     return {'messages': filter_messages}
-
-
 
 
 
@@ -181,6 +180,17 @@ def filter_dicts(elements, key, min_value):
             new_elements.append(element)
     return new_elements
 
+
+
+@app.route('/getStatus')
+def get_bot_status():
+    """Вывести информацию о телеграм боте"""
+    response = requests.get(
+        f"{config.TELEGRAM_API_ADRES}{config.TELEGRAM_API_KEY}/getMe"
+    )
+
+    return response.json()
+    # return {'messages': 1}
 
 
 @app.route('/messages')

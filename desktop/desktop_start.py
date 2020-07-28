@@ -30,6 +30,10 @@ class MessengerWindow(QtWidgets.QMainWindow, main_window.Ui_MainWindow):
         # с методом sendMessage который определим в этом классе.
         self.pushButton.pressed.connect(self.sendMessage)
 
+        # Получить статус телеграм бота
+        self.TelegramStatus.pressed.connect(self.getTelegramStatus)
+
+        # Время последнего обнавления сообщений с сервера
         self.after = time.time() - 24 * 60 * 60
 
         # Таймер для запуска метода который будет запускаться через некотрый
@@ -84,6 +88,31 @@ class MessengerWindow(QtWidgets.QMainWindow, main_window.Ui_MainWindow):
 
 
 
+    def getTelegramStatus(self):
+        # Проверка на отправку сообщения на сервер
+        try:
+            response = requests.get(f'{self.url}/getStatus')
+        except:
+            self.add_text('Сервер telegram бота не доступен')
+            return
+
+        # print(response.status_code)
+        # print(response.headers)
+        # print(response.text)
+        if response.status_code == 200:
+            print('========================================================')
+            # self.add_text(response.json)
+
+            for item in response.json():
+                self.textBrowser.append(f"{item} = {response.json()[item]}")
+
+            # self.textBrowser.append( response.json()['result']['username'] )
+            # self.textBrowser.repaint()
+
+    # def add_text(self, text):
+    #     """Метод добавляет сообщения в общий чат"""
+    #     self.textBrowser.append(text.format(end='\n'))
+    #     self.textBrowser.repaint()
 
 
     def sendMessage(self):

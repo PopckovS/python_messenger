@@ -14,7 +14,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(450, 555)
+        MainWindow.resize(450, 552)
         MainWindow.setStyleSheet("background-color: rgb(14, 22, 33);")
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
@@ -46,6 +46,10 @@ class Ui_MainWindow(object):
         self.linePassword.setGeometry(QtCore.QRect(300, 20, 111, 21))
         self.linePassword.setStyleSheet("background-color: rgb(255, 255, 255);")
         self.linePassword.setObjectName("linePassword")
+        self.TelegramStatus = QtWidgets.QPushButton(self.centralwidget)
+        self.TelegramStatus.setGeometry(QtCore.QRect(320, 500, 121, 25))
+        self.TelegramStatus.setStyleSheet("color: rgb(255, 255, 255);")
+        self.TelegramStatus.setObjectName("TelegramStatus")
         MainWindow.setCentralWidget(self.centralwidget)
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
         self.statusbar.setObjectName("statusbar")
@@ -60,3 +64,4 @@ class Ui_MainWindow(object):
         self.pushButton.setText(_translate("MainWindow", "Send"))
         self.label_2.setText(_translate("MainWindow", "Username"))
         self.label_3.setText(_translate("MainWindow", "Password"))
+        self.TelegramStatus.setText(_translate("MainWindow", "Telegram status"))

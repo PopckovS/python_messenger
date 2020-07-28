@@ -29,7 +29,8 @@ class Install():
 
         # self.shell_execute('cd python_messenger')
         # python_messenger
-        
+
+
 
     def composer_install(self):
         """Шутка для php-шников, но давыполняет туже функцию устанавливает все зависимости проекта"""
@@ -39,9 +40,11 @@ class Install():
         self.pip_pq5()
         self.pip_dev_tools()
 
+
     def clone_github_repo(self):
         """Клонирование и установка проекта из репозитория на github"""
         self.shell_execute(f"git clone {self.repo}")
+
 
 
     def shell_execute(self, command, stop=0):
